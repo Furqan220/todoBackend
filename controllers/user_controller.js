@@ -14,7 +14,33 @@ try {
  
     }
 } catch (error) {
-    
+    // throw new Error(error.toString());
     res.json({status : false,error});   
 }
+};
+
+exports.login = async (req,res,next)=>{
+    try {
+        const {email,password} = req.body;
+        const user = await UserServices.checkUser(email);
+        if (!user) {
+            throw new Error("User doesn't exist");
+        }
+        const isMatched = await user.comparePassword(password);
+        if (isMatched === false) {
+            throw new Error("Password is incorrect");
+        }
+        let tokenData = {_id:user._id,email: user.email};
+
+        const token  = await UserServices.generateToken(tokenData,"*******",'1h');
+
+        res.status(200).json({
+            status: true,
+            token ,
+            success : "User logged in Successfully"
+        });
+        
+    } catch (error) {
+        res.json({status : false,error});   
+    }
 };
