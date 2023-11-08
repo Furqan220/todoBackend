@@ -16,6 +16,10 @@ const userSchema = new Schema ({
         type:String,
         required : true,
     },
+    username : {
+        type:String,
+        required : true,
+    },
 },{timestamps:true});
 
 userSchema.pre('save',async function () {
@@ -37,6 +41,6 @@ userSchema.methods.comparePassword = async function(userPass) {
   }  
 };
 
-const UserModel = db.model('user',userSchema);
+const UserModel = db.model('users',userSchema);
 
 module.exports = UserModel;

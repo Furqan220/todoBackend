@@ -18,7 +18,17 @@ const todoSchema = new Schema ({
     desc : {
         type:String,
         required : true,
+    }, 
+    category : {
+        type:String,
+        required : true,
     },
+    isCompleted : {
+        type:Boolean,
+        default : false
+
+    }
+   
 },{timestamps:true});
 
 
