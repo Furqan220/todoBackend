@@ -1,6 +1,29 @@
 const TodoServices = require('../services/todo_service');
 
-exports.createTodo = async (req, res, next) => {
+exports.validateBody = (req, res, next) => {
+    if (!req.userId || !req.title || !req.desc || !req.category) {
+        return res.status(400).json({ status: false, error: "Invalid Request Body" });
+    }
+    next();
+}
+exports.validateId = (req, res, next) => {
+    if (!req.query.id) {
+        return res.status(400).json({ status: false, error: "Missing Query Parameter id" });
+    }
+    TodoServices.getSingleTodo(req.query.id).then((data) => {
+
+        if (!data) {
+            return res.status(404).json({ status: true, success: "Todo Not Found" });
+        }
+        next();
+    }).catch((error) => {
+        console.error(error);
+        return res.status(400).json({ status: false, error: error.toString() });
+
+    });
+
+}
+exports.createTodo = (req, res, next) => {
     try {
         const { userId, title, desc, category } = req.body;
         TodoServices.createTodo(userId, title, desc, category).then((result) => {
@@ -19,12 +42,12 @@ exports.createTodo = async (req, res, next) => {
 
     }
 }
-exports.getProgress = async (req, res, next) => {
+exports.getProgress = (req, res, next) => {
     try {
         const { userId } = req.query;
         if (userId) {
             console.log("This is user id " + userId);
-            await TodoServices.getAllTodos(userId).then((data) => {
+            TodoServices.getAllTodos(userId).then((data) => {
                 console.log(data)
                 if (data.length !== 0) {
 
@@ -57,7 +80,7 @@ exports.getProgress = async (req, res, next) => {
                     return res.status(200).json({ status: true, success: "Progress Fetched Successfully", data: result });
 
                 } else {
-                    return res.status(200).json({ status: false, success: "No Todos Found" ,data: []});
+                    return res.status(200).json({ status: false, success: "No Todos Found", data: [] });
 
                 }
             }).catch((error) => {
@@ -74,12 +97,12 @@ exports.getProgress = async (req, res, next) => {
 
     }
 }
-exports.getAllTodos = async (req, res, next) => {
+exports.getAllTodos = (req, res, next) => {
     try {
         const userId = req.query.userId;
         if (userId) {
             // console.log("This is user id " + userId);
-            await TodoServices.getAllTodos(userId).then((data) => {
+            TodoServices.getAllTodos(userId).then((data) => {
                 console.log(data)
 
                 return res.status(200).json({ status: true, success: "Todos Fetched Successfully", data: data });
@@ -97,10 +120,10 @@ exports.getAllTodos = async (req, res, next) => {
 
     }
 }
-exports.deleteTodo = async (req, res, next) => {
+exports.deleteTodo = (req, res, next) => {
     try {
         const { id } = req.query;
-        await TodoServices.deleteTodo(id).then((data) => {
+        TodoServices.deleteTodo(id).then((data) => {
 
             if (data !== null) {
                 return res.status(200).json({ status: true, success: "Todo Deleted Successfully" });
@@ -118,7 +141,7 @@ exports.deleteTodo = async (req, res, next) => {
 
     }
 }
-exports.updateTodoStatus = async (req, res, next) => {
+exports.updateTodoStatus = (req, res, next) => {
     try {
         const { id } = req.query;
         const { isCompleted } = req.body;
@@ -128,7 +151,7 @@ exports.updateTodoStatus = async (req, res, next) => {
         if (isCompleted === null || isCompleted === undefined) {
             return res.status(400).json({ status: true, success: "Missing data is required" });
         }
-        await TodoServices.updateTodoStatus(id, isCompleted).then((data) => {
+        TodoServices.updateTodoStatus(id, isCompleted).then((data) => {
 
             if (data !== null) {
                 return res.status(200).json({ status: true, success: "Todo Updated Successfully" });

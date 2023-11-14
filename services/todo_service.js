@@ -26,6 +26,15 @@ class TodoServices {
             throw new Error(error.toString());
         }
     }
+    static async getSingleTodo(id) {
+        try {
+            const getSingleTodo = await TodoModel.findById(id);
+            // console.log(deletedTodo);      
+            return getSingleTodo;
+        } catch (error) {
+            throw new Error(error.toString());
+        }
+    }
     static async updateTodoStatus(id, isCompleted) {
         try {
             const updatedTodo = await TodoModel.findByIdAndUpdate(id, {isCompleted : isCompleted}, { new: true, runValidators: true });
