@@ -1,7 +1,7 @@
 const TodoServices = require('../services/todo_service');
 
 exports.validateBody = (req, res, next) => {
-    if (!req.userId || !req.title || !req.desc || !req.category) {
+    if (!req.body.userId || !req.body.title || !req.body.desc || !req.body.category) {
         return res.status(400).json({ status: false, error: "Invalid Request Body" });
     }
     next();
