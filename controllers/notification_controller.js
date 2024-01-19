@@ -1,23 +1,18 @@
-const { initializeApp , applicationDefault } = require('firebase-admin/app');
+
 const { getMessaging } = require("firebase-admin/messaging");
 
-
-process.env.GOOGLE_APPLICATION_CREDENTIALS;
-
-initializeApp({
-    credential : applicationDefault(),
-    projectId: "todoapp-d96a2"
-});
-
-    exports.sendNotification = (req, res, next) => {
-        const receivedToken = req.body.fcmToken;
+exports.sendNotification = (req, res, next) => {
+        const receivedToken = req.query.token;
+        console.log(receivedToken);
+        
         
         const message = {
           notification: {
             title: "Notif",
             body: 'This is a Test Notification'
           },
-          token: "eRP8vSH-R52rt0-4iT3dKc:APA91bGg-z1T4r_ldMUYM5xs5yrgl9IWerF8dJa-mWbHZPDyFkkSNhXU2mvtzir-1M89Tud10t3JA0xlvBDo3t2yYdHX9IQCM7eCRF4VheKvz_cM5E3jHFssPJcw6cVyF0Kw6DgU_keT",
+          token: "receivedToken",
+
         };
         
         getMessaging()
